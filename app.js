@@ -8,7 +8,7 @@ const server = http.createServer((req, res) => {
         let body = '';
         req.on('end', ()=>{
             console.log(body);
-            let userName = body.split('=')[1];
+            let userName = body.split('=')[1].split('+').join(' ');
             console.log(userName);
             res.end(`<h1>${userName}</h1>`);
         })
