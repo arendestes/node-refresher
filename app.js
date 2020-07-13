@@ -1,25 +1,26 @@
-const http = require('http');
+const express = require('express');
 
-const server = http.createServer((req, res) => {
-    console.log('INCOMING REQUEST');
-    console.log(req.method, req.url);
+const app = express();
 
-    if (req.method === 'POST') {
-        let body = '';
-        req.on('end', ()=>{
-            console.log(body);
-            let userName = body.split('=')[1].split('+').join(' ');
-            console.log(userName);
-            res.end(`<h1>${userName}</h1>`);
-        })
-        req.on("data", chunk => {
-            body += chunk;
-        })
-       
-    } else {
-        res.setHeader('Content-Type', 'text/html');
-        res.end('<form method="POST"><input type="text" name="userName"></input><button type="submit">Create User</button></form>');
+app.use((req, res, next) => {
+    let body = "";
+    req.on('end', () => {
+        const userName = body.split('=')[1];
+        if(userName){
+        req.body = {userName: userName};
+        };
+        next();
+    });
+    req.on('data', chunk => {
+        body += chunk;
+    });
+})
+
+app.use((req, res, next) => {
+    if( req.body ){
+        return res.send('<h1>' + req.body.userName + '</h1>');
     }
-});
+    res.send('<form method="POST"><input type="text" name="userName"><button type="submit">Add User</button></input></form>')
+})
 
-server.listen(5000);
+app.listen(5000);
