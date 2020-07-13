@@ -1,15 +1,11 @@
-const fs = require('fs');
+const http = require('http');
 
+const server = http.createServer((req, res) =>{
+    console.log('INCOMING REQUEST');
+    console.log(req.method, req.url);
 
-const userName = 'Bruce Wayne';
-
-console.log(userName);
-
-
-fs.writeFile('./user-data.txt', 'Name: ' + userName, err => {
-    if(err){
-        console.log(err);
-        return;
-    }
-    console.log('WROTE FILE');
+    res.setHeader('Content-Type', 'text/html');
+    res.end('<h1>Response</h1>');
 });
+
+server.listen(5000);
